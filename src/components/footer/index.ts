@@ -1,0 +1,2 @@
+export { InstagramFeed } from "./InstagramFeed";
+
