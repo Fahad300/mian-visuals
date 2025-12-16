@@ -27,11 +27,96 @@ function escapeHtml(text: string): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, eventType, eventDate, message } = body;
+
+    // Handle QuoteForm format (firstName/lastName) or ContactForm format (name)
+    const name = body.name || `${body.firstName || ""} ${body.lastName || ""}`.trim();
+    const email = body.email;
+    const phone = body.phone || `${body.phoneCountry || ""}${body.phone || ""}`.trim();
+    const eventType = body.eventType || body.howYouFoundUs || "Quote Request";
+
+    // Handle date range (dateFrom/dateTo) or single date
+    let formattedDate = "Not specified";
+    if (body.dateFrom && body.dateTo) {
+      const fromDate = new Date(body.dateFrom + "T00:00:00");
+      const toDate = new Date(body.dateTo + "T00:00:00");
+
+      // Check if dates are valid
+      if (!isNaN(fromDate.getTime()) && !isNaN(toDate.getTime())) {
+        const fromFormatted = fromDate.toLocaleDateString("en-GB", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        const toFormatted = toDate.toLocaleDateString("en-GB", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        formattedDate = `${fromFormatted} - ${toFormatted}`;
+      }
+    } else if (body.dateFrom) {
+      const fromDate = new Date(body.dateFrom + "T00:00:00");
+      if (!isNaN(fromDate.getTime())) {
+        formattedDate = fromDate.toLocaleDateString("en-GB", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+    } else if (body.eventDate) {
+      const eventDate = new Date(body.eventDate + "T00:00:00");
+      if (!isNaN(eventDate.getTime())) {
+        formattedDate = eventDate.toLocaleDateString("en-GB", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+    }
+
+    // Format duration array to readable text
+    let formattedDuration = "Not specified";
+    if (Array.isArray(body.duration) && body.duration.length > 0) {
+      const durationMap: Record<string, string> = {
+        "under4hours": "Under 4 hours",
+        "above4hours": "Above 4 hours",
+      };
+      formattedDuration = body.duration
+        .map((d: string) => durationMap[d] || d)
+        .join(" & ");
+    } else if (body.duration) {
+      formattedDuration = body.duration;
+    }
+
+    // Format preferred package array to readable text
+    let formattedPackage = "Not specified";
+    if (Array.isArray(body.preferredPackage) && body.preferredPackage.length > 0) {
+      const packageMap: Record<string, string> = {
+        "customquote": "Custom Quote",
+        "bronze": "Bronze",
+        "silver": "Silver",
+        "gold": "Gold",
+        "destinationwedding": "Destination Wedding",
+      };
+      formattedPackage = body.preferredPackage
+        .map((p: string) => packageMap[p] || p)
+        .join(", ");
+    } else if (body.preferredPackage) {
+      formattedPackage = body.preferredPackage;
+    }
+
+    const message = body.message ||
+      `Venue: ${body.venue || "Not specified"}\n` +
+      `Duration: ${formattedDuration}\n` +
+      `Preferred Package: ${formattedPackage}`;
 
     // Validate required fields
-    if (!name || !email || !phone || !eventType || !eventDate || !message) {
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    if (!name || !email || !phone) {
+      return NextResponse.json({ error: "Name, email, and phone are required" }, { status: 400 });
     }
 
     // Validate email format using utility
@@ -48,25 +133,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Format event date
-    const formattedDate = new Date(eventDate).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
     // Escape user input to prevent XSS
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safePhone = escapeHtml(phone);
     const safeEventType = escapeHtml(eventType);
     const safeMessage = escapeHtml(message);
+    const safeFormattedDate = escapeHtml(formattedDate);
+    const safeFormattedDuration = escapeHtml(formattedDuration);
+    const safeFormattedPackage = escapeHtml(formattedPackage);
+    const safeVenue = escapeHtml(body.venue || "Not specified");
 
     // Email to admin
     await sendEmail({
       to: recipientEmail,
-      subject: `New Contact Form - ${safeEventType} on ${formattedDate}`,
+      subject: `New Quote Request - ${safeName}`,
       replyTo: email,
       html: `
         <!DOCTYPE html>
@@ -168,12 +249,24 @@ export async function POST(request: NextRequest) {
               </div>
               <div class="field">
                 <span class="label">Event Date</span>
-                <div class="value">${formattedDate}</div>
+                <div class="value">${safeFormattedDate}</div>
               </div>
               <div class="field">
-                <span class="label">Message</span>
-                <div class="message-box">${safeMessage}</div>
+                <span class="label">Venue</span>
+                <div class="value">${safeVenue}</div>
               </div>
+              <div class="field">
+                <span class="label">Duration</span>
+                <div class="value">${safeFormattedDuration}</div>
+              </div>
+              <div class="field">
+                <span class="label">Preferred Package</span>
+                <div class="value" style="font-weight: 600; color: #C9A961;">${safeFormattedPackage}</div>
+              </div>
+              ${body.message ? `<div class="field">
+                <span class="label">Additional Message</span>
+                <div class="message-box">${safeMessage}</div>
+              </div>` : ""}
               <div style="text-align: center;">
                 <a href="mailto:${safeEmail}" class="cta-button">REPLY TO CLIENT</a>
               </div>
@@ -187,70 +280,12 @@ export async function POST(request: NextRequest) {
       `,
     });
 
-    // Auto-reply to customer
-    await sendEmail({
-      to: email,
-      subject: "Thank You for Contacting Mian Visuals",
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>
-            body { 
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              line-height: 1.6; 
-              color: #333; 
-            }
-            .container { 
-              max-width: 600px; 
-              margin: 0 auto; 
-            }
-            .header { 
-              background: #000000; 
-              color: #ffffff; 
-              padding: 40px 20px; 
-              text-align: center; 
-            }
-            .content { 
-              padding: 40px 30px; 
-            }
-            .highlight-box {
-              background: #f9f9f9;
-              padding: 20px;
-              margin: 30px 0;
-              border-left: 3px solid #000;
-            }
-            .footer { 
-              text-align: center; 
-              padding: 30px 20px; 
-              background: #f9f9f9;
-              font-size: 12px; 
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>Thank You, ${safeName}!</h1>
-            </div>
-            <div class="content">
-              <p>Thank you for reaching out to Mian Visuals. We're excited about your upcoming <strong>${safeEventType}</strong> on <strong>${formattedDate}</strong>.</p>
-              
-              <div class="highlight-box">
-                <p><strong>What happens next?</strong></p>
-                <p>Our team will review your inquiry and get back to you within 24 hours.</p>
-              </div>
-              
-              <p>Best regards,<br><strong>Mian Visuals Team</strong></p>
-            </div>
-            <div class="footer">
-              <p>Mian Visuals | Professional Photography Services</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
-    });
+    // Auto-reply to customer - Disabled for now
+    // await sendEmail({
+    //   to: email,
+    //   subject: "Thank You for Contacting Mian Visuals",
+    //   html: `...`,
+    // });
 
     return NextResponse.json({ message: "Email sent successfully" }, { status: 200 });
   } catch (error) {

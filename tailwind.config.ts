@@ -38,8 +38,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ["var(--font-playfair)", "Georgia", "serif"],
-        body: ["var(--font-inter)", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["var(--font-glinster)", "Georgia", "serif"],
+        body: ["var(--font-sora)", "system-ui", "-apple-system", "sans-serif"],
       },
       spacing: {
         "18": "4.5rem",

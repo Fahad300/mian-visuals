@@ -1,5 +1,7 @@
 import { Section } from "@/components/shared/Section";
 import { PageHero } from "@/components/shared/PageHero";
+import { motion } from "framer-motion";
+import { Heart, Camera, Users, Briefcase } from "lucide-react";
 
 /**
  * Testimonials data
@@ -82,7 +84,7 @@ export default function TestimonialsPage() {
 
                                 {/* Testimonial Text */}
                                 <p className="mb-6 text-secondary/80 italic">
-                                    "{testimonial.text}"
+                                    &ldquo;{testimonial.text}&rdquo;
                                 </p>
 
                                 {/* Author Info */}
@@ -92,6 +94,265 @@ export default function TestimonialsPage() {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </Section>
+                {/* Services Section */}
+                <Section className="py-16 bg-gray-100">
+                    <div className="container mx-auto px-6 lg:px-8">
+                        <div className="text-center mb-12">
+                            <h5 className='text-2xl font-light tracking-wide text-secondary'>Time stands still in every shot</h5>
+                            <h2 className="font-heading text-3xl sm:text-4xl md:text-6xl font-semibold text-black mb-4">
+                                Our Services
+                            </h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {/* Wedding Photography */}
+                            <motion.div
+                                className="border border-muted rounded-2xl p-8 text-left group cursor-pointer relative overflow-hidden"
+                                whileHover={{
+                                    scale: 1.05,
+                                    borderColor: '#C9A961',
+                                    boxShadow: '0 20px 40px rgba(201, 169, 97, 0.2)'
+                                }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                                {/* Animated background gradient on hover */}
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    initial={{ scale: 0, rotate: 45 }}
+                                    whileHover={{ scale: 1.2, rotate: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                />
+
+                                <div className="relative z-10">
+                                    <div className="mb-2">
+                                        <Heart className="w-10 h-10 text-black group-hover:text-primary transition-colors duration-300" />
+                                    </div>
+                                    <motion.h3
+                                        className="font-heading text-3xl font-semibold text-black mb-4 group-hover:text-primary transition-colors duration-300"
+                                        whileHover={{ x: 10 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Weddings
+                                    </motion.h3>
+                                    <motion.p
+                                        className="text-black leading-relaxed"
+                                        initial={{ opacity: 1 }}
+                                        whileHover={{ opacity: 0.8, y: -5 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Capture the magic of your special day with elegant, timeless photography that tells your unique love story.
+                                    </motion.p>
+                                </div>
+
+                                {/* Floating particles effect */}
+                                <motion.div
+                                    className="absolute top-4 right-4 w-2 h-2 bg-primary rounded-full opacity-0 group-hover:opacity-60"
+                                    animate={{
+                                        y: [0, -20, 0],
+                                        opacity: [0, 0.6, 0]
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        delay: 0.2
+                                    }}
+                                />
+                                <motion.div
+                                    className="absolute bottom-6 right-8 w-1 h-1 bg-primary rounded-full opacity-0 group-hover:opacity-40"
+                                    animate={{
+                                        y: [0, -15, 0],
+                                        opacity: [0, 0.4, 0]
+                                    }}
+                                    transition={{
+                                        duration: 1.8,
+                                        repeat: Infinity,
+                                        delay: 0.5
+                                    }}
+                                />
+                            </motion.div>
+
+                            {/* Portrait Photography */}
+                            <motion.div
+                                className="border border-muted rounded-2xl p-8 text-left group cursor-pointer relative overflow-hidden"
+                                whileHover={{
+                                    scale: 1.05,
+                                    borderColor: '#C9A961',
+                                    boxShadow: '0 20px 40px rgba(201, 169, 97, 0.2)'
+                                }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    initial={{ scale: 0, rotate: -45 }}
+                                    whileHover={{ scale: 1.2, rotate: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                />
+
+                                <div className="relative z-10">
+                                    <div className="mb-2">
+                                        <Camera className="w-10 h-10 text-black group-hover:text-primary transition-colors duration-300" />
+                                    </div>
+                                    <motion.h3
+                                        className="font-heading text-3xl font-semibold text-black mb-4 group-hover:text-primary transition-colors duration-300"
+                                        whileHover={{ x: 10 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Portraits
+                                    </motion.h3>
+                                    <motion.p
+                                        className="text-black leading-relaxed"
+                                        whileHover={{ opacity: 0.8, y: -5 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Professional portrait sessions that capture personality, emotion, and authentic moments for individuals and families.
+                                    </motion.p>
+                                </div>
+
+                                <motion.div
+                                    className="absolute top-6 right-6 w-2 h-2 bg-primary rounded-full opacity-0 group-hover:opacity-60"
+                                    animate={{
+                                        scale: [1, 1.5, 1],
+                                        opacity: [0, 0.6, 0]
+                                    }}
+                                    transition={{
+                                        duration: 1.5,
+                                        repeat: Infinity,
+                                        delay: 0.3
+                                    }}
+                                />
+                            </motion.div>
+
+                            {/* Event Photography */}
+                            <motion.div
+                                className="border border-muted rounded-2xl p-8 text-left group cursor-pointer relative overflow-hidden"
+                                whileHover={{
+                                    scale: 1.05,
+                                    borderColor: '#C9A961',
+                                    boxShadow: '0 20px 40px rgba(201, 169, 97, 0.2)'
+                                }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    initial={{ scale: 0, rotate: 90 }}
+                                    whileHover={{ scale: 1.2, rotate: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                />
+
+                                <div className="relative z-10">
+                                    <div className="mb-2">
+                                        <Users className="w-10 h-10 text-black group-hover:text-primary transition-colors duration-300" />
+                                    </div>
+                                    <motion.h3
+                                        className="font-heading text-3xl font-semibold text-black mb-4 group-hover:text-primary transition-colors duration-300"
+                                        whileHover={{ x: 10 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Events
+                                    </motion.h3>
+                                    <motion.p
+                                        className="text-black leading-relaxed"
+                                        whileHover={{ opacity: 0.8, y: -5 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Document your celebrations, corporate events, and special occasions with professional coverage and attention to detail.
+                                    </motion.p>
+                                </div>
+
+                                <motion.div
+                                    className="absolute top-4 left-4 w-1 h-1 bg-primary rounded-full opacity-0 group-hover:opacity-50"
+                                    animate={{
+                                        x: [0, 20, 0],
+                                        y: [0, 15, 0],
+                                        opacity: [0, 0.5, 0]
+                                    }}
+                                    transition={{
+                                        duration: 2.2,
+                                        repeat: Infinity,
+                                        delay: 0.1
+                                    }}
+                                />
+                                <motion.div
+                                    className="absolute bottom-4 left-6 w-1.5 h-1.5 bg-primary rounded-full opacity-0 group-hover:opacity-40"
+                                    animate={{
+                                        x: [0, -10, 0],
+                                        opacity: [0, 0.4, 0]
+                                    }}
+                                    transition={{
+                                        duration: 1.8,
+                                        repeat: Infinity,
+                                        delay: 0.4
+                                    }}
+                                />
+                            </motion.div>
+
+                            {/* Commercial Photography */}
+                            <motion.div
+                                className="border border-muted rounded-2xl p-8 text-left group cursor-pointer relative overflow-hidden"
+                                whileHover={{
+                                    scale: 1.05,
+                                    borderColor: '#C9A961',
+                                    boxShadow: '0 20px 40px rgba(201, 169, 97, 0.2)'
+                                }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    initial={{ scale: 0, rotate: -90 }}
+                                    whileHover={{ scale: 1.2, rotate: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                />
+
+                                <div className="relative z-10">
+                                    <div className="mb-2">
+                                        <Briefcase className="w-10 h-10 text-black group-hover:text-primary transition-colors duration-300" />
+                                    </div>
+                                    <motion.h3
+                                        className="font-heading text-3xl font-semibold text-black mb-4 group-hover:text-primary transition-colors duration-300"
+                                        whileHover={{ x: 10 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Commercial
+                                    </motion.h3>
+                                    <motion.p
+                                        className="text-black leading-relaxed"
+                                        whileHover={{ opacity: 0.8, y: -5 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        Professional business photography including product shots, branding content, and marketing materials for your company.
+                                    </motion.p>
+                                </div>
+
+                                <motion.div
+                                    className="absolute top-8 right-4 w-2 h-2 bg-primary rounded-full opacity-0 group-hover:opacity-60"
+                                    animate={{
+                                        rotate: 360,
+                                        scale: [1, 1.5, 1],
+                                        opacity: [0, 0.6, 0]
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        delay: 0.2
+                                    }}
+                                />
+                                <motion.div
+                                    className="absolute bottom-8 right-6 w-1 h-1 bg-primary rounded-full opacity-0 group-hover:opacity-50"
+                                    animate={{
+                                        y: [0, -10, 0],
+                                        x: [0, 5, 0],
+                                        opacity: [0, 0.5, 0]
+                                    }}
+                                    transition={{
+                                        duration: 1.6,
+                                        repeat: Infinity,
+                                        delay: 0.6
+                                    }}
+                                />
+                            </motion.div>
+                        </div>
                     </div>
                 </Section>
             </div>

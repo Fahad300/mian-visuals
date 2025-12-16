@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { hotjar } from "@hotjar/browser";
+import hotjar from "@hotjar/browser";
 
 /**
  * Hotjar tracking component
@@ -18,7 +18,7 @@ export function Hotjar() {
     }
 
     // Initialize Hotjar
-    hotjar.initialize(parseInt(siteId, 10), parseInt(hotjarVersion, 10));
+    hotjar.init(parseInt(siteId, 10), parseInt(hotjarVersion, 10));
   }, []);
 
   return null;

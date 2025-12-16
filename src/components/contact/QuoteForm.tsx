@@ -1,312 +1,381 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/shared/Button";
-import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { showToast } from "../shared/Toaster";
 
 /**
- * Package options for quote form
+ * Quote Form Props
  */
-const PACKAGE_OPTIONS = [
-  { value: "bronze", label: "Bronze" },
-  { value: "silver", label: "Silver" },
-  { value: "gold", label: "Gold" },
-  { value: "destination-wedding", label: "Destination Wedding" },
-] as const;
+interface QuoteFormProps {
+  /**
+   * Callback when form is submitted
+   */
+  onSubmit?: (data: FormData) => void | Promise<void>;
+}
 
 /**
- * Quote form validation schema
+ * Form Data Interface
  */
-const quoteFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
-  duration: z.string().min(1, "Duration is required"),
-  datesRequired: z.string().min(1, "Dates required is required"),
-  venue: z.string().min(2, "Venue must be at least 2 characters"),
-  message: z.string().optional(),
-  preferredPackage: z.enum(["bronze", "silver", "gold", "destination-wedding"], {
-    required_error: "Please select a package",
-  }),
-});
-
-type QuoteFormData = z.infer<typeof quoteFormSchema>;
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  phoneCountry: string;
+  venue: string;
+  dateFrom: string;
+  dateTo: string;
+  howYouFoundUs: string;
+  duration: string[];
+  preferredPackage: string[];
+}
 
 /**
- * Get a Quote form component with G Suite email integration
+ * Contact Form Component
  */
-export function QuoteForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<QuoteFormData>({
-    resolver: zodResolver(quoteFormSchema),
+export function QuoteForm({ onSubmit }: QuoteFormProps) {
+  const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    phoneCountry: "+44",
+    venue: "",
+    dateFrom: "",
+    dateTo: "",
+    howYouFoundUs: "",
+    duration: [],
+    preferredPackage: [],
   });
 
-  const onSubmit = async (data: QuoteFormData) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+
+    if (type === "checkbox") {
+      setFormData((prev) => {
+        const currentArray = (prev[name as keyof FormData] as string[]) || [];
+        if (checked) {
+          return { ...prev, [name]: [...currentArray, value] };
+        } else {
+          return { ...prev, [name]: currentArray.filter((item) => item !== value) };
+        }
+      });
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus(null);
 
     try {
-      const response = await fetch("/api/quote", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      await onSubmit?.(formData);
+      // Reset form after successful submission
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        phoneCountry: "+44",
+        venue: "",
+        dateFrom: "",
+        dateTo: "",
+        howYouFoundUs: "",
+        duration: [],
+        preferredPackage: [],
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to submit quote request");
-      }
-
-      setSubmitStatus({
-        type: "success",
-        message: "Thank you! Your quote request has been submitted successfully. We'll get back to you soon.",
-      });
-      reset();
+      showToast("Thank you! We will get back to you soon.", "success");
     } catch (error) {
-      setSubmitStatus({
-        type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to submit quote request. Please try again.",
-      });
+      console.error("Form submission error:", error);
+      showToast(
+        error instanceof Error ? error.message : "Failed to submit form. Please try again.",
+        "error"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Name */}
-        <div>
-          <label
-            htmlFor="name"
-            className="mb-2 block text-sm font-medium text-accent"
-          >
-            Name <span className="text-primary">*</span>
-          </label>
-          <input
-            id="name"
-            type="text"
-            {...register("name")}
-            className={cn(
-              "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-              errors.name && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-            )}
-            placeholder="Your full name"
-          />
-          {errors.name && (
-            <p className="mt-1 text-sm text-yellow-400">{errors.name.message}</p>
-          )}
+    <section className="w-full">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-[50px]">
+          <p className="text-lg sm:text-xl md:text-2xl font-light tracking-wide text-secondary mb-2">Let’s Connect and Create</p>
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold text-black mb-3 sm:mb-4 px-4">Get a Quote</h2>
         </div>
-
-        {/* Email */}
-        <div>
-          <label
-            htmlFor="email"
-            className="mb-2 block text-sm font-medium text-accent"
-          >
-            Email Address <span className="text-primary">*</span>
-          </label>
-          <input
-            id="email"
-            type="email"
-            {...register("email")}
-            className={cn(
-              "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-              errors.email && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-            )}
-            placeholder="your.email@example.com"
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-yellow-400">{errors.email.message}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Phone Number */}
-        <div>
-          <label
-            htmlFor="phone"
-            className="mb-2 block text-sm font-medium text-accent"
-          >
-            Number <span className="text-primary">*</span>
-          </label>
-          <input
-            id="phone"
-            type="tel"
-            {...register("phone")}
-            className={cn(
-              "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-              errors.phone && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-            )}
-            placeholder="(555) 123-4567"
-          />
-          {errors.phone && (
-            <p className="mt-1 text-sm text-yellow-400">{errors.phone.message}</p>
-          )}
-        </div>
-
-        {/* Duration */}
-        <div>
-          <label
-            htmlFor="duration"
-            className="mb-2 block text-sm font-medium text-accent"
-          >
-            Duration <span className="text-accent">*</span>
-          </label>
-          <input
-            id="duration"
-            type="text"
-            {...register("duration")}
-            className={cn(
-              "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-              errors.duration && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-            )}
-            placeholder="e.g., 8 hours, Full day"
-          />
-          {errors.duration && (
-            <p className="mt-1 text-sm text-yellow-400">{errors.duration.message}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Dates Required */}
-        <div>
-          <label
-            htmlFor="datesRequired"
-            className="mb-2 block text-sm font-medium text-accent"
-          >
-            Dates Required <span className="text-primary">*</span>
-          </label>
-          <input
-            id="datesRequired"
-            type="text"
-            {...register("datesRequired")}
-            className={cn(
-              "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-              errors.datesRequired && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-            )}
-            placeholder="e.g., June 15, 2024 or June 15-16, 2024"
-          />
-          {errors.datesRequired && (
-            <p className="mt-1 text-sm text-yellow-400">{errors.datesRequired.message}</p>
-          )}
-        </div>
-
-        {/* Venue */}
-        <div>
-          <label
-            htmlFor="venue"
-            className="mb-2 block text-sm font-medium text-accent"
-          >
-            Venue <span className="text-primary">*</span>
-          </label>
-          <input
-            id="venue"
-            type="text"
-            {...register("venue")}
-            className={cn(
-              "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-              errors.venue && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-            )}
-            placeholder="Event venue location"
-          />
-          {errors.venue && (
-            <p className="mt-1 text-sm text-yellow-400">{errors.venue.message}</p>
-          )}
-        </div>
-      </div>
-
-      {/* Preferred Package */}
-      <div>
-        <label
-          htmlFor="preferredPackage"
-          className="mb-2 block text-sm font-medium text-accent"
+        <motion.form
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          onSubmit={handleSubmit}
+          className="space-y-6"
         >
-          Preferred Package <span className="text-primary">*</span>
-        </label>
-        <select
-          id="preferredPackage"
-          {...register("preferredPackage")}
-          className={cn(
-            "w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-            errors.preferredPackage && "border-yellow-400 focus:border-yellow-400 focus:ring-yellow-400/20"
-          )}
-        >
-          <option value="" className="bg-secondary-dark text-accent">Select a package</option>
-          {PACKAGE_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value} className="bg-secondary-dark text-accent">
-              {option.label}
-            </option>
-          ))}
-        </select>
-        {errors.preferredPackage && (
-          <p className="mt-1 text-sm text-yellow-400">{errors.preferredPackage.message}</p>
-        )}
+          {/* First Name & Last Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                htmlFor="firstName"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                First Name
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="John"
+                required
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Smith"
+                required
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Email Address */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-900 mb-2"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="example@email.com"
+              required
+              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
+            />
+          </div>
+
+          {/* Phone & Venue */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                Phone
+              </label>
+              <div className="flex gap-2">
+                <div className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg">
+                  <span className="text-lg">🇬🇧</span>
+                  <span className="text-sm font-medium text-gray-700">+44</span>
+                </div>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="7700 900123"
+                  required
+                  className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="venue"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                Venue
+              </label>
+              <input
+                type="text"
+                id="venue"
+                name="venue"
+                value={formData.venue}
+                onChange={handleChange}
+                placeholder="Venue"
+                required
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Dates Required - From and To */}
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-3">
+              Dates Required
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="dateFrom"
+                  className="block text-xs text-gray-600 mb-2"
+                >
+                  From
+                </label>
+                <input
+                  type="date"
+                  id="dateFrom"
+                  name="dateFrom"
+                  value={formData.dateFrom}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60 hover:[&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:saturate-100 [&::-webkit-calendar-picker-indicator]:invert-[0.7]"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="dateTo"
+                  className="block text-xs text-gray-600 mb-2"
+                >
+                  To
+                </label>
+                <input
+                  type="date"
+                  id="dateTo"
+                  name="dateTo"
+                  value={formData.dateTo}
+                  onChange={handleChange}
+                  required
+                  min={formData.dateFrom || undefined}
+                  className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60 hover:[&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:saturate-100 [&::-webkit-calendar-picker-indicator]:invert-[0.7]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Duration and How you found us - Same Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Duration */}
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-3">
+                Duration
+              </label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    name="duration"
+                    value="under4hours"
+                    checked={formData.duration.includes("under4hours")}
+                    onChange={handleChange}
+                    className="custom-checkbox"
+                  />
+                  <span className="text-sm text-gray-700 group-hover:text-primary transition-colors">Under 4 hours</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    name="duration"
+                    value="above4hours"
+                    checked={formData.duration.includes("above4hours")}
+                    onChange={handleChange}
+                    className="custom-checkbox"
+                  />
+                  <span className="text-sm text-gray-700 group-hover:text-primary transition-colors">Above 4 hours</span>
+                </label>
+              </div>
+            </div>
+
+            {/* How you found us */}
+            <div>
+              <label
+                htmlFor="howYouFoundUs"
+                className="block text-sm font-medium text-gray-900 mb-2"
+              >
+                How you found us
+              </label>
+              <select
+                id="howYouFoundUs"
+                name="howYouFoundUs"
+                value={formData.howYouFoundUs}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all appearance-none"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23C9A961' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E")`,
+                  backgroundPosition: "right 0.5rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1.5em 1.5em",
+                }}
+              >
+                <option value="">Select an option</option>
+                <option value="instagram">Instagram</option>
+                <option value="facebook">Facebook</option>
+                <option value="google">Google Search</option>
+                <option value="friend">Friend/Family Referral</option>
+                <option value="venue">Venue Recommendation</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Preferred Package */}
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-3">
+              Preferred Package
+            </label>
+            <div className="flex flex-wrap gap-4">
+              {["Custom Quote", "Bronze", "Silver", "Gold", "Destination Wedding"].map((pkg) => {
+                const value = pkg.toLowerCase().replace(" ", "");
+                return (
+                  <label
+                    key={pkg}
+                    className="flex items-center gap-2 cursor-pointer group"
+                  >
+                    <input
+                      type="checkbox"
+                      name="preferredPackage"
+                      value={value}
+                      checked={formData.preferredPackage.includes(value)}
+                      onChange={handleChange}
+                      className="custom-checkbox"
+                    />
+                    <span className="text-sm text-gray-700 group-hover:text-primary transition-colors">{pkg}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center pt-6">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-12 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Submitting..." : "Get A Quote"}
+            </button>
+          </div>
+        </motion.form>
       </div>
-
-      {/* Message */}
-      <div>
-        <label
-          htmlFor="message"
-          className="mb-2 block text-sm font-medium text-accent"
-        >
-          Message
-        </label>
-        <textarea
-          id="message"
-          rows={6}
-          {...register("message")}
-          className="w-full rounded-md border border-accent/30 bg-secondary-dark px-4 py-2 text-accent placeholder:text-accent/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-          placeholder="Tell us more about your event or any special requirements..."
-        />
-      </div>
-
-      {/* Submit Status */}
-      {submitStatus && (
-        <div
-          className={cn(
-            "rounded-md p-4",
-            submitStatus.type === "success"
-              ? "bg-green-900/30 text-green-300 border border-green-500/50"
-              : "bg-red-900/30 text-red-300 border border-red-500/50"
-          )}
-        >
-          <p className="text-sm font-medium">{submitStatus.message}</p>
-        </div>
-      )}
-
-      {/* Submit Button */}
-      <Button
-        type="submit"
-        variant="primary"
-        size="large"
-        disabled={isSubmitting}
-        fullWidth
-      >
-        {isSubmitting ? "Submitting..." : "Get a Quote"}
-      </Button>
-    </form>
+    </section>
   );
 }
-

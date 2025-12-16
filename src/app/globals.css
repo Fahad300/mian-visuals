@@ -1,8 +1,13 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Agatho&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inria+Serif:wght@300;400;700&display=swap');
+
+
 
 /**
  * CSS Reset and Base Styles
- * Selective reset that works with Tailwind utilities
  */
 *,
 *::before,
@@ -10,7 +15,6 @@
   box-sizing: border-box;
 }
 
-/* Reset only specific elements, not all elements */
 body,
 h1,
 h2,
@@ -26,223 +30,59 @@ dd {
   margin: 0;
 }
 
-ul[role="list"],
-ol[role="list"] {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
-body {
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
-  overflow-x: hidden;
+@layer base {
+
+  /* Apply Glinster to all headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Agatho', serif;
 }
 
-p {
-  margin-bottom: 1rem;
-  line-height: 1.7;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color 0.3s ease, opacity 0.3s ease;
-}
-
-a:hover {
-  opacity: 0.8;
-}
-
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-input,
-textarea,
-select {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-/**
- * Smooth Scrolling
- */
-html {
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  /* Apply Sora to body and paragraphs */
+  body,
+  p {
+    font-family: 'Inria Serif', serif;
   }
 }
 
 /**
- * Custom Scrollbar Styling
- * Minimal and elegant design
+ * Custom Scrollbar
  */
 ::-webkit-scrollbar {
   width: 10px;
-  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5F5F5;
-  border-left: 1px solid #E8E8E8;
+  background: #f5f5f5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C9A961;
+  background: #c9a961;
   border-radius: 5px;
-  border: 2px solid #F5F5F5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B89A4F;
-}
-
-/* Firefox scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #C9A961 #F5F5F5;
+  background: #b89a4f;
 }
 
 /**
- * Text Selection Styling
- * Gold highlight matching brand colors
+ * Custom Utilities
  */
-::selection {
-  background-color: #C9A961;
-  color: #000000;
-}
-
-::-moz-selection {
-  background-color: #C9A961;
-  color: #000000;
-}
-
-/**
- * Focus Styles
- */
-:focus-visible {
-  outline: 2px solid #C9A961;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/**
- * Utility Classes
- */
-
-
-/* Container */
-.container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-@media (min-width: 640px) {
-  .container {
-    max-width: 640px;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 768px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
-}
-
-/* Smooth Transitions */
-.transition-smooth {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.transition-slow {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Text Utilities */
+@layer utilities {
 .text-balance {
   text-wrap: balance;
 }
 
-.text-pretty {
-  text-wrap: pretty;
-}
-
-/* Gradient Text */
-.text-gradient {
-  background: linear-gradient(135deg, #C9A961 0%, #B89A4F 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Section Spacing */
-.section-padding {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-@media (min-width: 768px) {
-  .section-padding {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
-/* Glass Morphism Effect */
 .glass {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -250,75 +90,65 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Gold Accent Border */
-.border-gold {
-  border-color: #C9A961;
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
-.border-gold-thick {
-  border: 2px solid #C9A961;
-}
-
-/* Hover Effects */
-.hover-lift {
-  transition: all 0.3s ease;
-}
-
-.hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(201, 169, 97, 0.2);
-}
-
-/* Focus Ring */
-.focus-ring:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #C9A961, 0 0 0 4px rgba(201, 169, 97, 0.2);
-}
-
-/* Loading States */
-.skeleton {
-  background: linear-gradient(90deg, #F5F5F5 25%, #E8E8E8 50%, #F5F5F5 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s ease-in-out infinite;
-}
-
-@keyframes loading {
-  0% {
-    background-position: 200% 0;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
-  100% {
-    background-position: -200% 0;
+  /* Custom Checkbox Styling */
+  .custom-checkbox {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid #d1d5db;
+    border-radius: 0.25rem;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .custom-checkbox:checked {
+    background-color: #C9A961;
+    border-color: #C9A961;
+  }
+
+  .custom-checkbox:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .custom-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.2);
+  }
+
+  .custom-checkbox:hover {
+    border-color: #C9A961;
   }
 }
 
-/* Print Styles */
-@media print {
-  * {
-    background: transparent !important;
-    color: black !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
+/**
+ * Smooth Animations
+ */
+@media (prefers-reduced-motion: reduce) {
 
-  a,
-  a:visited {
-    text-decoration: underline;
-  }
-
-  img {
-    page-break-inside: avoid;
-  }
-
-  p,
-  h2,
-  h3 {
-    orphans: 3;
-    widows: 3;
-  }
-
-  h2,
-  h3 {
-    page-break-after: avoid;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

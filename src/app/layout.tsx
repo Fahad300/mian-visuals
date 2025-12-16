@@ -1,25 +1,12 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { Playfair_Display, Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
-import { Hotjar } from "@/components/analytics/Hotjar";
+import { Toaster } from "@/components/shared/Toaster";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  display: "swap",
-});
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
+
 
 export const metadata: Metadata = {
   title: {
@@ -82,28 +69,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preload" href="/images/hero/hero.jpg" as="image" />
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      </head>
       <body
-        className={`${playfairDisplay.variable} ${inter.variable} font-body antialiased`}
+        className={`font-body antialiased`}
       >
-        <Suspense fallback={null}>
-          <GoogleAnalytics />
-        </Suspense>
-        <Hotjar />
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">
-            <Suspense
-              fallback={
-                <div className="flex min-h-screen items-center justify-center">
-                  <LoadingSpinner size="large" />
-                </div>
-              }
-            >
-              {children}
-            </Suspense>
+            {children}
           </main>
           <Footer />
         </div>
+        <Toaster />
       </body>
     </html>
   );
