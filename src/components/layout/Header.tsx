@@ -93,6 +93,7 @@ export function Header() {
                 fill
                 className="object-contain"
                 priority
+                unoptimized={true}
               />
             </div>
           </Link>
@@ -111,9 +112,9 @@ export function Header() {
                     className="relative group py-2"
                   >
                     <span className={cn(
-                      "text-sm font-light tracking-wide transition-colors duration-300",
+                      "text-sm font-light tracking-wide transition-colors duration-300 font-body",
                       isActive ? "text-white" : "text-white/70 hover:text-white"
-                    )}>
+                    )} style={{ fontFamily: "'Sora', sans-serif" }}>
                       {link.label}
                     </span>
                     {isActive && (
@@ -206,11 +207,12 @@ export function Header() {
                           prefetch={true}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={cn(
-                            "block py-4 px-4 text-xl font-light tracking-wide transition-all duration-300 rounded-lg border border-transparent",
+                            "block py-4 px-4 text-xl font-light tracking-wide transition-all duration-300 rounded-lg border border-transparent font-body",
                             isActive
                               ? "text-white bg-primary/10 border-primary/20"
                               : "text-white/70 hover:text-white hover:bg-white/5 hover:border-white/10"
                           )}
+                          style={{ fontFamily: "'Sora', sans-serif" }}
                         >
                           {link.label}
                         </Link>

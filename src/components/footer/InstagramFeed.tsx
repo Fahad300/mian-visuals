@@ -161,6 +161,7 @@ export function InstagramFeed() {
               fill
               sizes="(max-width: 768px) 33vw, 150px"
               className="object-cover transition-opacity duration-300 group-hover:opacity-90"
+              unoptimized={true}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             {post.media_type === "VIDEO" && (

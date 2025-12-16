@@ -193,6 +193,7 @@ export default function HeroSwiperGallery({
                   className="object-cover transition-all duration-700 group-hover:scale-110"
                   sizes="(max-width: 768px) 280px, 360px"
                   priority={index < 3}
+                  unoptimized={true}
                 />
 
                 {/* Gradient overlay */}

@@ -38,8 +38,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        heading: ["var(--font-glinster)", "Georgia", "serif"],
-        body: ["var(--font-sora)", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["'Agatho'", "serif"],
+        body: ["'Sora'", "sans-serif"],
       },
       spacing: {
         "18": "4.5rem",

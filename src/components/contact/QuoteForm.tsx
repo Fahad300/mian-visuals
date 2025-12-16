@@ -104,7 +104,7 @@ export function QuoteForm({ onSubmit }: QuoteFormProps) {
   };
 
   return (
-    <section className="w-full">
+    <section className="w-full" style={{ fontFamily: "'Sora', sans-serif" }}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-[50px]">
           <p className="text-lg sm:text-xl md:text-2xl font-light tracking-wide text-secondary mb-2">Let’s Connect and Create</p>

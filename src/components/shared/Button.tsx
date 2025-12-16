@@ -73,7 +73,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
      * Base styles for all buttons
      */
     const baseStyles =
-      "relative inline-flex items-center justify-center rounded-md font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed";
+      "relative inline-flex items-center justify-center rounded-md font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed font-body";
 
     /**
      * Variant styles
@@ -141,6 +141,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "cursor-pointer",
           className
         )}
+        style={{ fontFamily: "'Sora', sans-serif" }}
         {...props}
       >
         {loading && (

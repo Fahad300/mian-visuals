@@ -83,10 +83,10 @@ export function PricingCards({
 
 
     return (
-        <section className="w-full py-16 bg-white">
+        <section className="w-full py-16 bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Pricing Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
                     {packages.map((pkg, index) => (
                         <motion.div
                             key={pkg.name}
@@ -116,11 +116,11 @@ export function PricingCards({
                                 >
                                     <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0">
                                         <div>
-                                            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-1 text-black">{pkg.name}</h3>
-                                            <p className="text-[20px] sm:text-[18px] text-black/70">{pkg.description}</p>
+                                            <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 text-black">{pkg.name}</h3>
+                                            <p className="text-sm sm:text-base md:text-lg text-black/70">{pkg.description}</p>
                                         </div>
                                         <div className="text-left sm:text-right">
-                                            <span className="text-xl sm:text-2xl md:text-[30px] font-bold text-black">£{pkg.price}</span>
+                                            <span className="text-lg sm:text-xl md:text-2xl lg:text-[30px] font-bold text-black">£{pkg.price}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@ export function PricingCards({
                                         {pkg.features.map((feature, idx) => (
                                             <li key={idx} className="flex items-start gap-2 text-gray-700 mb-4">
                                                 <Circle className="w-3 h-3 text-gray-600 flex-shrink-0 mt-2" />
-                                                <span className="text-[20px] sm:text-[18px]">{feature}</span>
+                                                <span className="text-sm sm:text-base md:text-lg">{feature}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -165,9 +165,9 @@ export function PricingCards({
                     className="rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
                     style={{ backgroundColor: "#F2F2F2" }}
                 >
-                    <div className="flex flex-col md:flex-row items-center gap-0">
+                    <div className="flex flex-col md:flex-row items-center gap-0 overflow-hidden">
                         {/* Image */}
-                        <div className="w-full md:w-1/3 relative md:h-[200px] lg:h-[300px] rounded-lg overflow-hidden ml-4">
+                        <div className="m-5 w-full md:w-1/3 relative md:h-[200px] lg:h-[330px] rounded-lg overflow-hidden md:ml-4">
                             <Image
                                 src={destinationImage}
                                 alt="Destination Wedding"
@@ -175,14 +175,17 @@ export function PricingCards({
                                 className="object-cover"
                                 sizes="(max-width: 768px) 50vw, 20vw"
                                 priority
+                                unoptimized={true}
+                                style={{ objectFit: 'cover', objectPosition: 'center bottom' }}
+
                             />
                         </div>
 
                         {/* Content */}
                         <div className="w-full md:w-2/3 p-6 sm:p-8 md:p-12">
-                            <p className="text-[27px] font-bold text-gray-600 mb-0">Starting from £4500</p>
-                            <h3 className="text-[45px] font-bold mb-2">Destination Wedding</h3>
-                            <p className="text-[20px] text-gray-700 mb-4 sm:mb-6 leading-relaxed">
+                            <p className="text-lg sm:text-xl md:text-2xl lg:text-[27px] font-bold text-gray-600 mb-0">Starting from £4500</p>
+                            <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">Destination Wedding</h3>
+                            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 mb-4 sm:mb-6 leading-relaxed">
                                 Your destination wedding isn&apos;t just a day; it&apos;s a story that deserves to be told with depth,
                                 beauty, and soul. From sun-drenched coasts to timeless cities, no two weddings are the same
                                 and neither is the way we capture them.

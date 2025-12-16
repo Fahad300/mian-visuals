@@ -24,8 +24,7 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com",
       },
     ],
-    qualities: [75, 85, 90, 95], // Optimized quality levels
-    formats: ['image/webp', 'image/avif'], // Modern formats for better compression
+    // Removed quality and format optimization for crisp images
   },
   // Performance optimizations
   poweredByHeader: false,

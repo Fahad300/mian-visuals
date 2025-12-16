@@ -136,7 +136,7 @@ export function FeaturedWeddingsGallery({
           className="flex overflow-x-hidden"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <div className="flex gap-2 md:gap-3 min-w-max">
+          <div className="flex gap-4 min-w-max">
             {row1Duplicated.map((image, idx) => {
               const globalIdx = (idx % row1Images.length) * 2;
               return (
@@ -152,7 +152,7 @@ export function FeaturedWeddingsGallery({
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                       sizes="(max-width: 768px) 350px, 480px"
-                      quality={85}
+                      unoptimized={true}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
@@ -165,10 +165,10 @@ export function FeaturedWeddingsGallery({
         {/* Row 2 - Edge to edge, moves RIGHT (opposite direction) */}
         <div
           ref={row2Ref}
-          className="flex overflow-x-hidden mt-4 md:mt-6"
+          className="flex overflow-x-hidden mt-[1rem]"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <div className="flex gap-2 md:gap-3 min-w-max">
+          <div className="flex gap-4 min-w-max">
             {row2Duplicated.map((image, idx) => {
               const originalRow2Idx = row2Images.length - 1 - (idx % row2Images.length);
               const globalIdx = (originalRow2Idx * 2) + 1;
@@ -185,7 +185,7 @@ export function FeaturedWeddingsGallery({
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
                       sizes="(max-width: 768px) 350px, 480px"
-                      quality={85}
+                      unoptimized={true}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>

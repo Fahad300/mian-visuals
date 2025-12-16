@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Agatho&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inria+Serif:wght@300;400;700&display=swap');
 
 
@@ -38,7 +39,7 @@ html {
 
 @layer base {
 
-  /* Apply Glinster to all headings */
+  /* Apply Agatho to all headings */
 h1,
 h2,
 h3,
@@ -51,7 +52,19 @@ h6 {
   /* Apply Sora to body and paragraphs */
   body,
   p {
-    font-family: 'Inria Serif', serif;
+    font-family: 'Sora', sans-serif;
+  }
+
+  /* Ensure crisp image rendering for photos */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    transform: translateZ(0);
   }
 }
 

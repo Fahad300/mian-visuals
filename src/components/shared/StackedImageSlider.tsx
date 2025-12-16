@@ -100,6 +100,7 @@ export function StackedImageSlider({
                       className="object-cover transition-transform duration-500"
                       priority={isActive}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      unoptimized={true}
                     />
 
                     {/* Overlay with subtle gradient - only on active image */}

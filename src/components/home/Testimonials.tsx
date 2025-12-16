@@ -14,6 +14,7 @@ interface GoogleReview {
     avatar: string;
     rating: number;
     review: string;
+    backgroundImage?: string; // Optional background image for each review
 }
 
 /**
@@ -26,9 +27,8 @@ export function Testimonials() {
     const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
 
     // Fixed configuration
-    const backgroundImage = "/images/testimonials-bg.png";
     const email = "info@mianvisuals.com";
-    const autoScrollInterval = 5000;
+    const autoScrollInterval = 10000; // Slower - 10 seconds
     const socialLinks = {
         facebook: "https://facebook.com/mianvisuals",
         instagram: "https://instagram.com/mianvisuals",
@@ -38,6 +38,7 @@ export function Testimonials() {
     };
 
     // Real Google Reviews - UPDATE THESE WITH YOUR ACTUAL REVIEWS
+    // You can add backgroundImage to each review to change the background
     const reviews: GoogleReview[] = [
         {
             name: "Aleem Ditta",
@@ -45,22 +46,34 @@ export function Testimonials() {
             avatar: "https://lh3.googleusercontent.com/a-/ALV-UjWo3aewKBE-5cgyZTYIblirf2AUlCfoI8uENbnNGV3HxalG-Q0h=s64-c-rp-mo-br100",
             rating: 5,
             review: "had Mian Visuals film my wedding, and they were absolutely fantastic from start to finish. The whole team was professional, on time, and really easy to work with. A special mention to Amaan, who was a top lad — friendly, genuine, and made everyone feel comfortable throughout the day.They stuck to their word the entire way through, and when it came to the editing, I actually got my video earlier than promised!",
+            backgroundImage: "/images/testimonials/1.png", // Add your background image path
         },
         {
             name: "Muhammad Shaheryar",
             role: "Google User",
             avatar: "https://lh3.googleusercontent.com/a-/ALV-UjUQDxF8yKxP6CHJ9l3zi6vLQ7r0JuYWm1FnY3MFyFLXi2Wac55v=s64-c-rp-mo-br100",
             rating: 5,
-            review: "Mian Visuals are honestly the best in the North! Super professional, creative and easy to work with. They really went above and beyond and the final results were amazing. Couldn’t recommend them enough!",
+            review: "Mian Visuals are honestly the best in the North! Super professional, creative and easy to work with. They really went above and beyond and the final results were amazing. Couldn't recommend them enough!",
+            backgroundImage: "/images/testimonials/2.png", // Add your background image path
         },
         {
             name: "Shana Khan",
             role: "Google User",
             avatar: "https://lh3.googleusercontent.com/a/ACg8ocLpIBWqiAHSYr-IH8EdiZaLd602LjVAAQCTDE1FU9leokf5Z1Rm=s64-c-rp-mo-br100",
             rating: 5,
-            review: "I used Mian for both my events wedding and mehndi, I honestly couldn’t fault them, they were amazing. I can’t wait to see the pictures!! I can’t recommend them enough, we will definitely be using them again in the future!!",
+            review: "I used Mian for both my events wedding and mehndi, I honestly couldn't fault them, they were amazing. I can't wait to see the pictures!! I can't recommend them enough, we will definitely be using them again in the future!!",
+            backgroundImage: "/images/testimonials/3.png", // Add your background image path
         },
     ];
+
+    // Default background if review doesn't have one
+    const defaultBackground = "/images/testimonials/2.png";
+    const currentBackground = reviews[currentIndex]?.backgroundImage || defaultBackground;
+
+    // Debug: Log current background to verify it's changing
+    useEffect(() => {
+        console.log("Current Index:", currentIndex, "Background:", currentBackground);
+    }, [currentIndex, currentBackground]);
 
     const handleNext = () => {
         setDirection(1);
@@ -94,33 +107,47 @@ export function Testimonials() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [autoScrollInterval]);
 
-    const variants = {
-        enter: (direction: number) => ({
-            x: direction > 0 ? 1000 : -1000,
+    // Variants for text fade only (box stays visible)
+    const textVariants = {
+        enter: {
             opacity: 0,
-        }),
-        center: {
-            x: 0,
-            opacity: 1,
+            y: 20,
         },
-        exit: (direction: number) => ({
-            x: direction < 0 ? 1000 : -1000,
+        center: {
+            opacity: 1,
+            y: 0,
+        },
+        exit: {
             opacity: 0,
-        }),
+            y: -20,
+        },
     };
 
     return (
         <section className="relative w-full overflow-hidden py-10 md:py-16 lg:py-20">
-            {/* Background Image */}
+            {/* Background Image - Changes with slider */}
             <div className="absolute inset-0">
-                <Image
-                    src={backgroundImage}
-                    alt="Testimonials Background"
-                    fill
-                    className="object-cover"
-                    priority
-                />
-                <div className="absolute inset-0 bg-black/40" />
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={`bg-${currentIndex}-${currentBackground}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                        className="absolute inset-0"
+                    >
+                        <Image
+                            key={`img-${currentIndex}-${currentBackground}`}
+                            src={currentBackground}
+                            alt={`Testimonials Background ${currentIndex + 1}`}
+                            fill
+                            className="object-cover"
+                            priority={currentIndex === 0}
+                            unoptimized={true}
+                        />
+                    </motion.div>
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-black/40 z-10" />
             </div>
 
             {/* Content Container */}
@@ -133,7 +160,7 @@ export function Testimonials() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
-                            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight"
+                            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight"
                         >
                             Don&apos;t Just Take Our Word for It
                         </motion.h2>
@@ -143,66 +170,76 @@ export function Testimonials() {
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-5 "
                         >
-                            <Image className="opacity-80 hover:opacity-100 transition-opacity" src="/images/Google-Review.svg" alt="Google Reviews" width={300} height={100} />
+                            <Image className="opacity-80 hover:opacity-100 transition-opacity" src="/images/Google-Review.svg" alt="Google Reviews" width={200} height={100} />
                         </motion.a>
                     </div>
 
                     {/* Right Side - Testimonial Card with Carousel */}
-                    <div className="hidden md:block w-full md:w-1/2 z-10">
-                        <div className="max-w-xl ml-auto relative">
+                    <div className="w-full md:w-1/2 z-10">
+                        <div className="max-w-xl md:ml-auto relative">
 
-                            {/* Testimonial Card */}
-                            <div className="relative overflow-hidden">
-                                <AnimatePresence initial={false} custom={direction} mode="wait">
-                                    <motion.div
-                                        key={currentIndex}
-                                        custom={direction}
-                                        variants={variants}
-                                        initial="enter"
-                                        animate="center"
-                                        exit="exit"
-                                        transition={{
-                                            x: { type: "spring", stiffness: 300, damping: 30 },
-                                            opacity: { duration: 0.2 },
-                                        }}
-                                    >
-                                        <div className="bg-white rounded-lg p-8 shadow-2xl flex flex-col">
-                                            {/* Header */}
-                                            <div className="mb-4">
-                                                <h3 className="text-[40px] font-bold text-gray-900 mb-3">
-                                                    What Are Clients Saying?
-                                                </h3>
-                                                {/* Star Rating and Google Review Link */}
-                                                <a
-                                                    href={socialLinks.googleReviews}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
-                                                >
-                                                    <div className="flex gap-1">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <Star
-                                                                key={i}
-                                                                className="w-5 h-5 fill-yellow-400 text-yellow-400"
-                                                            />
-                                                        ))}
-                                                    </div>
-                                                </a>
+                            {/* Testimonial Card - Box always visible */}
+                            <div className="relative overflow-visible">
+                                <div className="bg-white rounded-lg p-6 md:p-8 shadow-2xl flex flex-col">
+                                    {/* Header - Always visible */}
+                                    <div className="mb-4">
+                                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                                            What Are Clients Saying?
+                                        </h3>
+                                        {/* Star Rating and Google Review Link */}
+                                        <a
+                                            href={socialLinks.googleReviews}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-2 group hover:opacity-80 transition-opacity"
+                                        >
+                                            <div className="flex gap-1">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                                                    />
+                                                ))}
                                             </div>
+                                        </a>
+                                    </div>
 
-                                            {/* Review Text */}
-                                            <p className="text-base text-gray-700 mb-6 leading-relaxed">
+                                    {/* Review Text - Fades in/out */}
+                                    <div className="relative min-h-[150px] mb-6 overflow-visible">
+                                        <AnimatePresence mode="wait">
+                                            <motion.p
+                                                key={currentIndex}
+                                                variants={textVariants}
+                                                initial="enter"
+                                                animate="center"
+                                                exit="exit"
+                                                transition={{ duration: 0.4 }}
+                                                className="text-base text-gray-700 leading-relaxed"
+                                            >
                                                 {reviews[currentIndex].review}
-                                            </p>
+                                            </motion.p>
+                                        </AnimatePresence>
+                                    </div>
 
-                                            {/* Reviewer Info */}
-                                            <div className="flex items-center gap-3">
+                                    {/* Reviewer Info - Fades in/out */}
+                                    <div className="relative min-h-[60px] overflow-visible">
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={currentIndex}
+                                                variants={textVariants}
+                                                initial="enter"
+                                                animate="center"
+                                                exit="exit"
+                                                transition={{ duration: 0.4 }}
+                                                className="flex items-center gap-3"
+                                            >
                                                 <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gray-200">
                                                     <Image
                                                         src={reviews[currentIndex].avatar}
                                                         alt={reviews[currentIndex].name}
                                                         fill
                                                         className="object-cover"
+                                                        unoptimized={true}
                                                     />
                                                 </div>
                                                 <div>
@@ -213,10 +250,10 @@ export function Testimonials() {
                                                         {reviews[currentIndex].role}
                                                     </p>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                </AnimatePresence>
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Dots Indicator */}

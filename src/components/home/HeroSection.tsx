@@ -147,9 +147,7 @@ export function HeroSection({
             className="object-cover"
             priority
             sizes="100vw"
-            quality={85} // Reduced for faster loading
-            placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            unoptimized={true}
           />
         </motion.div>
       </motion.div>
@@ -203,12 +201,12 @@ export function HeroSection({
           </motion.div>
 
           {/* Main Headline */}
-          <motion.h1 variants={itemVariants} className="space-y-2">
-            <span className="block font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light tracking-wider text-white/90 px-4">
-            {headline}
-            </span>
-          </motion.h1>
-          <motion.p variants={itemVariants} className="text-white/70 text-base sm:text-lg md:text-xl lg:text-2xl font-light tracking-wide px-4">{subheadline}</motion.p>
+          <motion.div variants={itemVariants} className="space-y-2">
+            <h1 className="block font-heading font-light text-white/90 px-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5rem] tracking-normal md:tracking-[-3px]">
+              {headline}
+            </h1>
+            <p className="text-white/70 font-light tracking-wide px-4 text-lg sm:text-xl md:text-2xl lg:text-3xl" style={{ fontFamily: "'Inria Serif', serif" }}>{subheadline}</p>
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
@@ -250,7 +248,6 @@ export function HeroSection({
             ease: "easeInOut",
           }}
         >
-          <span className="text-xs font-light uppercase tracking-widest">Scroll</span>
           <ChevronDown className="h-6 w-6" />
         </motion.div>
       </motion.button>
