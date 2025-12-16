@@ -1,3 +1,5 @@
+"use client";
+
 import { Section } from "@/components/shared/Section";
 import { PageHero } from "@/components/shared/PageHero";
 import { motion } from "framer-motion";
