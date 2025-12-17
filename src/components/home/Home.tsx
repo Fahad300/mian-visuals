@@ -37,7 +37,7 @@ export function Home() {
   // About section images for the stacked slider
   const aboutImages: SliderImage[] = [
     {
-      src: "/images/about/about.png",
+      src: "/images/about/about.jpg",
       alt: "",
       title: ""
     },
@@ -51,25 +51,15 @@ export function Home() {
   // Featured weddings gallery images
   const featuredWeddingsImages = [
     { src: "/images/weddings/1.png", alt: "", width: 1200, height: 900 },
-    { src: "/images/weddings/2.png", alt: "", width: 800, height: 1200 },
-    { src: "/images/weddings/3.png", alt: "", width: 1200, height: 800 },
-    { src: "/images/weddings/4.png", alt: "", width: 900, height: 1200 },
+    { src: "/images/weddings/2.jpg", alt: "", width: 800, height: 1200 },
+    { src: "/images/weddings/3.jpg", alt: "", width: 1200, height: 800 },
+    { src: "/images/weddings/4.jpg", alt: "", width: 900, height: 1200 },
     { src: "/images/weddings/5.png", alt: "", width: 1200, height: 900 },
-    { src: "/images/weddings/6.png", alt: "", width: 1000, height: 1200 },
-    { src: "/images/weddings/7.png", alt: "", width: 1200, height: 800 },
-    { src: "/images/weddings/8.png", alt: "", width: 900, height: 1200 },
-    { src: "/images/weddings/9.png", alt: "", width: 1200, height: 900 },
-    { src: "/images/weddings/10.png", alt: "", width: 800, height: 1200 },
-    { src: "/images/weddings/11.png", alt: "", width: 1200, height: 800 },
-    { src: "/images/weddings/12.png", alt: "", width: 900, height: 1200 },
-    { src: "/images/weddings/13.png", alt: "", width: 1200, height: 900 },
-    { src: "/images/weddings/14.png", alt: "", width: 1000, height: 1200 },
-    { src: "/images/weddings/15.png", alt: "", width: 1200, height: 800 },
-    { src: "/images/weddings/16.png", alt: "", width: 900, height: 1200 },
-    { src: "/images/weddings/17.png", alt: "", width: 1200, height: 900 },
-    { src: "/images/weddings/18.png", alt: "", width: 800, height: 1200 },
-    { src: "/images/weddings/19.png", alt: "", width: 1200, height: 800 },
-    { src: "/images/weddings/20.png", alt: "", width: 900, height: 1200 },
+    { src: "/images/weddings/6.jpg", alt: "", width: 1000, height: 1200 },
+    { src: "/images/weddings/7.jpg", alt: "", width: 1200, height: 800 },
+    { src: "/images/weddings/8.jpg", alt: "", width: 900, height: 1200 },
+    { src: "/images/weddings/9.png", alt: "", width: 1200, height: 800 },
+    { src: "/images/weddings/10.png", alt: "", width: 900, height: 1200 },
   ]
 
 
